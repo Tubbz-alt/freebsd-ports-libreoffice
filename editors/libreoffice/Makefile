@@ -1,4 +1,4 @@
-# $FreeBSD: head/editors/libreoffice/Makefile 521982 2020-01-04 07:59:33Z lwhsu $
+# $FreeBSD: head/editors/libreoffice/Makefile 535467 2020-05-16 15:34:26Z fluffy $
 
 .include "${.CURDIR}/Makefile.common"
 
@@ -29,6 +29,7 @@ BUILD_DEPENDS=	p5-Archive-Zip>=0:archivers/p5-Archive-Zip \
 		flex>=0.26:textproc/flex
 LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libboost_date_time.so:devel/boost-libs \
+		libBox2D.so:misc/box2d \
 		libicutu.so:devel/icu \
 		liblangtag.so:devel/liblangtag \
 		libltdl.so:devel/libltdl \
@@ -94,7 +95,7 @@ RUN_DEPENDS=	xdg-open:devel/xdg-utils \
 
 DISTFILES+=	884ed41809687c3e168fc7c19b16585149ff058eca79acbf3ee784f6630704cc-opens___.ttf:ext
 DISTFILES+=	dtoa-20180411.tgz:src
-DISTFILES+=	skia-m83-8ce842d38d0b32149e874d6855c91e8c68ba65a7.tar.xz:src
+DISTFILES+=	skia-m84-c1baf6e1c2a5454148adb516f0f833483b5a0353.tar.xz:src
 
 NOT_FOR_ARCHS=		armv6 armv7
 NOT_FOR_ARCHS_REASON=	Unsupported host_cpu

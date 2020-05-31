@@ -1,4 +1,4 @@
-# $FreeBSD: head/editors/libreoffice/Makefile.common 513051 2019-09-27 17:56:27Z lwhsu $
+# $FreeBSD: head/editors/libreoffice/Makefile.common 535467 2020-05-16 15:34:26Z fluffy $
 
 PORTNAME=	libreoffice
 CATEGORIES+=	editors
@@ -10,7 +10,7 @@ LICENSE_COMB=	dual
 
 DISTVERSION=	${LOVERSION}.${RCVER}
 LOVERSION=	7.0.0
-RCVER=		0.alpha1
+RCVER=		0.beta1
 
 PRERELEASE=	yes
 DEVRELEASE=	yes
