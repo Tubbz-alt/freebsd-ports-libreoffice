@@ -23,4 +23,7 @@ USES=		compiler:c++11-lib libtool pathfix pkgconfig tar:xz
 USE_LDCONFIG=	yes
 INSTALL_TARGET=	install-strip
 
+LIBVERSION=	4.0.11
+PLIST_SUB+=	LIBVERSION=${LIBVERSION}
+
 .include <bsd.port.mk>
