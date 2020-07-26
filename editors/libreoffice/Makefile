@@ -111,13 +111,13 @@ SHEBANG_GLOB=	*.py
 
 GNU_CONFIGURE=	yes
 USE_GL=		gl glew glu
+USE_GNOME=	glib20
 USE_OPENLDAP=	yes
 USE_PERL5=	build
 USE_XORG=	ice sm x11 xaw xcb xext xinerama xrandr xrender
-USES=		autoreconf:build bison compiler:c++14-lang cpe gl gmake gnome \
-		jpeg mysql:client \
-		perl5 pkgconfig python shebangfix shared-mime-info ssl tar:xz \
-		xorg
+USES=		autoreconf:build bison compiler:c++14-lang cpe desktop-file-utils \
+		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
+		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
 
 OPTIONS_DEFINE=	CUPS DOCS GNOME GTK3 JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
 OPTIONS_DEFAULT=	CUPS MMEDIA
