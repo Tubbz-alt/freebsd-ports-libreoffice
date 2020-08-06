@@ -49,7 +49,6 @@ LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libpng.so:graphics/png \
 		libpoppler.so:graphics/poppler \
 		libqrcodegencpp.so:graphics/qr-code-generator \
-		libCoinMP.so:math/coinmp \
 		liblpsolve55.so:math/lp_solve \
 		libcmis-0.5.so:net/libcmis \
 		libfreetype.so:print/freetype2 \
@@ -115,16 +114,17 @@ USE_GNOME=	glib20
 USE_OPENLDAP=	yes
 USE_PERL5=	build
 USE_XORG=	ice sm x11 xaw xcb xext xinerama xrandr xrender
-USES=		autoreconf:build bison compiler:c++14-lang cpe desktop-file-utils \
+USES=		autoreconf:build bison compiler:c++14-lang cpe \
 		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
 		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
 
-OPTIONS_DEFINE=	CUPS DOCS GNOME GTK3 JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
+OPTIONS_DEFINE=	COINMP CUPS DOCS GNOME GTK3 JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
 OPTIONS_DEFAULT=	CUPS MMEDIA
 OPTIONS_DEFAULT_FreeBSD_12=	QT5
 OPTIONS_DEFAULT_FreeBSD_13=	QT5
 OPTIONS_DEFAULT+=	${OPTIONS_DEFAULT_${OPSYS}_${OSREL:R}}
 
+COINMP_DESC=	Enable CoinMP (deprecated) math solver
 GTK3_DESC=	GTK+ 3 GUI toolkit support (broken visual style)
 JAVA_DESC=	Add Java support (XML filters, macros, DB connections)
 KF5_DESC=	KF5/Qt5 GUI toolkit support (implies QT5)
@@ -134,6 +134,10 @@ QT5_DESC=	Qt5 GUI toolkit support (default visual style)
 SDK_DESC=	Build with SDK
 TEST_DESC=	Run all regression tests
 WEBDAV_DESC=	Enable WebDAV protocol
+
+COINMP_CONFIGURE_ENABLE=	coinmp
+COINMP_CONFIGURE_ON=	--with-system-coinmp
+COINMP_LIB_DEPENDS=	libCoinMP.so:math/coinmp
 
 CUPS_CONFIGURE_ENABLE=	cups
 CUPS_LIB_DEPENDS=	libcups.so:print/cups
@@ -205,7 +209,7 @@ PGSQL_USES=	pgsql
 
 QT5_CONFIGURE_ENABLE=	qt5
 QT5_USE=	qt=buildtools_build,core,gui,network,qmake_build,widgets,x11extras
-QT5_USES=	qt:5
+QT5_USES=	desktop-file-utils qt:5
 
 SDK_BUILD_DEPENDS=	doxygen:devel/doxygen
 SDK_CONFIGURE_ENABLE=	odk
