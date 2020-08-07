@@ -1,14 +1,14 @@
-# $FreeBSD: head/editors/libreoffice/Makefile 535467 2020-05-16 15:34:26Z fluffy $
+# $FreeBSD$
 
 .include "${.CURDIR}/Makefile.common"
 
-MASTER_SITES=	https://download.documentfoundation.org/libreoffice/src/${LOVERSION}/ \
+MASTER_SITES=	https://download.documentfoundation.org/libreoffice/src/${PORTVERSION}/ \
 		https://dev-www.libreoffice.org/src/:src \
 		https://dev-www.libreoffice.org/extern/:ext
-DISTFILES=	${PORTNAME}-${DISTVERSION}${EXTRACT_SUFX} \
-		${PORTNAME}-help-${DISTVERSION}${EXTRACT_SUFX}
+DISTFILES=	${PORTNAME}-${LOVERSION}${EXTRACT_SUFX} \
+		${PORTNAME}-help-${LOVERSION}${EXTRACT_SUFX}
 DIST_SUBDIR=	libreoffice
-EXTRACT_ONLY:=	${DISTFILES}
+EXTRACT_ONLY:=	${DISTFILES} ${I18N_DISTFILES}
 
 COMMENT=	Full integrated office productivity suite
 
@@ -29,7 +29,6 @@ BUILD_DEPENDS=	p5-Archive-Zip>=0:archivers/p5-Archive-Zip \
 		flex>=0.26:textproc/flex
 LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libboost_date_time.so:devel/boost-libs \
-		libBox2D.so:misc/box2d \
 		libicutu.so:devel/icu \
 		liblangtag.so:devel/liblangtag \
 		libltdl.so:devel/libltdl \
@@ -49,6 +48,7 @@ LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libpng.so:graphics/png \
 		libpoppler.so:graphics/poppler \
 		libqrcodegencpp.so:graphics/qr-code-generator \
+		libCoinMP.so:math/coinmp \
 		liblpsolve55.so:math/lp_solve \
 		libcmis-0.5.so:net/libcmis \
 		libfreetype.so:print/freetype2 \
@@ -81,7 +81,6 @@ LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libraptor2.so:textproc/raptor2 \
 		librdf.so:textproc/redland \
 		libfontconfig.so:x11-fonts/fontconfig \
-		libxcb-icccm.so:x11/xcb-util-wm \
 		libserf-1.so:www/serf
 RUN_DEPENDS=	xdg-open:devel/xdg-utils \
 		${LOCALBASE}/share/fonts/Caladea/Caladea-Bold.ttf:x11-fonts/crosextrafonts-caladea-ttf \
@@ -93,8 +92,6 @@ RUN_DEPENDS=	xdg-open:devel/xdg-utils \
 		${LOCALBASE}/share/fonts/LinLibertineG/LinLibertine_DR_G.ttf:x11-fonts/linuxlibertine-g
 
 DISTFILES+=	884ed41809687c3e168fc7c19b16585149ff058eca79acbf3ee784f6630704cc-opens___.ttf:ext
-DISTFILES+=	dtoa-20180411.tgz:src
-DISTFILES+=	skia-m84-c1baf6e1c2a5454148adb516f0f833483b5a0353.tar.xz:src
 
 NOT_FOR_ARCHS=		armv6 armv7
 NOT_FOR_ARCHS_REASON=	Unsupported host_cpu
@@ -103,30 +100,31 @@ NOT_FOR_ARCHS_REASON=	Unsupported host_cpu
 MASTER_SITES+=	https://dev-builds.libreoffice.org/pre-releases/src/
 .endif
 
-CONFLICTS_INSTALL=	libreoffice6
+CONFLICTS_INSTALL=	libreoffice
 
 INSTALL_TARGET=	distro-pack-install
+WRKSRC=		${WRKDIR}/${PORTNAME}-${LOVERSION}
 
 SHEBANG_GLOB=	*.py
 
 GNU_CONFIGURE=	yes
 USE_GL=		gl glew glu
-USE_GNOME=	glib20
 USE_OPENLDAP=	yes
 USE_PERL5=	build
-USE_XORG=	ice sm x11 xaw xcb xext xinerama xrandr xrender
-USES=		autoreconf:build bison compiler:c++14-lang cpe \
-		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
-		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
+USE_XORG=	ice sm x11 xaw xext xinerama xrandr xrender
+USES=		autoreconf:build bison compiler:c++14-lang cpe gl gmake gnome \
+		jpeg mysql:client \
+		perl5 pkgconfig python shebangfix shared-mime-info ssl tar:xz \
+		xorg
 
-OPTIONS_DEFINE=	COINMP CUPS DOCS GNOME GTK3 JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
-OPTIONS_DEFAULT=	CUPS MMEDIA
+OPTIONS_DEFINE=	CUPS DOCS GNOME GTK3 I18N JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
+OPTIONS_DEFAULT=	CUPS I18N MMEDIA
 OPTIONS_DEFAULT_FreeBSD_12=	QT5
 OPTIONS_DEFAULT_FreeBSD_13=	QT5
 OPTIONS_DEFAULT+=	${OPTIONS_DEFAULT_${OPSYS}_${OSREL:R}}
 
-COINMP_DESC=	Enable CoinMP (deprecated) math solver
 GTK3_DESC=	GTK+ 3 GUI toolkit support (broken visual style)
+I18N_DESC=	Build i18n resources
 JAVA_DESC=	Add Java support (XML filters, macros, DB connections)
 KF5_DESC=	KF5/Qt5 GUI toolkit support (implies QT5)
 MMEDIA_DESC=	Enable multimedia backend for Impress
@@ -136,10 +134,6 @@ SDK_DESC=	Build with SDK
 TEST_DESC=	Run all regression tests
 WEBDAV_DESC=	Enable WebDAV protocol
 
-COINMP_CONFIGURE_ENABLE=	coinmp
-COINMP_CONFIGURE_ON=	--with-system-coinmp
-COINMP_LIB_DEPENDS=	libCoinMP.so:math/coinmp
-
 CUPS_CONFIGURE_ENABLE=	cups
 CUPS_LIB_DEPENDS=	libcups.so:print/cups
 
@@ -147,8 +141,7 @@ DOCS_CONFIGURE_WITH=	help
 
 GNOME_CONFIGURE_ENABLE=	dbus dconf
 GNOME_IMPLIES=	GTK3
-GNOME_LIB_DEPENDS=	libdbus-1.so:devel/dbus \
-			libdbus-glib-1.so:devel/dbus-glib
+GNOME_LIB_DEPENDS=	libdbus-glib-1.so:devel/dbus-glib
 GNOME_USE=	GNOME=dconf
 
 GTK3_CONFIGURE_ENABLE=	gtk3
@@ -156,14 +149,20 @@ GTK3_USE=	GNOME=gtk30,gtk-update-icon-cache
 GTK3_USES=	desktop-file-utils
 GTK3_VARS=	POST_PLIST=add-plist-gnome
 
+I18N_CONFIGURE_WITH=	lang=ALL
+I18N_DISTFILES=		${PORTNAME}-dictionaries-${LOVERSION}${EXTRACT_SUFX} \
+			${PORTNAME}-translations-${LOVERSION}${EXTRACT_SUFX}
+
 JAVA_BUILD_DEPENDS=	ant:devel/apache-ant \
 			${JAVAJARDIR}/commons-codec.jar:java/apache-commons-codec \
 			${JAVAJARDIR}/commons-httpclient.jar:java/apache-commons-httpclient \
 			${JAVAJARDIR}/commons-lang3.jar:java/apache-commons-lang3 \
 			${JAVAJARDIR}/commons-logging.jar:java/apache-commons-logging \
-			${JAVAJARDIR}/junit.jar:java/junit
+			${JAVAJARDIR}/junit.jar:java/junit \
+			${JAVAJARDIR}/bsh.jar:lang/bsh
 JAVA_CATEGORIES=	java
 JAVA_CONFIGURE_ON=	--with-ant-home=${LOCALBASE}/share/java/apache-ant \
+			--with-beanshell-jar=${JAVAJARDIR}/bsh.jar \
 			--with-commons-codec-jar=${JAVAJARDIR}/commons-codec.jar \
 			--with-commons-httpclient-jar=${JAVAJARDIR}/commons-httpclient.jar \
 			--with-commons-lang-jar=${JAVAJARDIR}/commons-lang3.jar \
@@ -171,7 +170,6 @@ JAVA_CONFIGURE_ON=	--with-ant-home=${LOCALBASE}/share/java/apache-ant \
 			--with-jdk-home="${JAVA_HOME}" \
 			--with-junit=${JAVAJARDIR}/junit.jar \
 			--with-hamcrest=${JAVAJARDIR}/hamcrest.jar \
-			--without-system-beanshell \
 			--without-system-jfreereport
 JAVA_CONFIGURE_WITH=	java
 # XXX jni.h from GNU classpath causes ABI conflicts.
@@ -188,13 +186,12 @@ JAVA_DISTFILES=	17410483b5b5f267aa18b7e00b65e6e0-hsqldb_1_8_0.zip:src \
 		a084cd548b586552cb7d3ee51f1af969-odfvalidator-1.1.8-incubating-SNAPSHOT-jar-with-dependencies.jar:ext \
 		ace6ab49184e329db254e454a010f56d-libxml-1.1.7.zip:src \
 		ba2930200c9f019c2d93a8c88c651a0f-flow-engine-0.9.4.zip:src \
-		beeca87be45ec87d241ddd0e1bad80c1-bsh-2.0b6-src.zip:src \
 		d8bd5eed178db6e2b18eeed243f85aa8-flute-1.1.6.zip:src \
 		db60e4fde8dd6d6807523deb71ee34dc-liblayout-0.2.10.zip:src \
 		eeb2c7ddf0d302fba4bfc6e97eac9624-libbase-1.1.6.zip:src \
 		f94d9870737518e3b597f9265f4e9803-libserializer-1.1.6.zip:src
 JAVA_USE=	JAVA=yes
-JAVA_VARS=	JAVA_BUILD=yes JAVA_VERSION=11+
+JAVA_VARS=	JAVA_BUILD=yes
 
 KF5_CONFIGURE_ENABLE=	kf5
 KF5_USE=	kde=config,coreaddons,i18n,kio,windowsystem
@@ -210,7 +207,7 @@ PGSQL_USES=	pgsql
 
 QT5_CONFIGURE_ENABLE=	qt5
 QT5_USE=	qt=buildtools_build,core,gui,network,qmake_build,widgets,x11extras
-QT5_USES=	desktop-file-utils qt:5
+QT5_USES=	qt:5
 
 SDK_BUILD_DEPENDS=	doxygen:devel/doxygen
 SDK_CONFIGURE_ENABLE=	odk
