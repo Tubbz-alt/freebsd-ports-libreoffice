@@ -113,10 +113,9 @@ USE_GL=		gl glew glu
 USE_OPENLDAP=	yes
 USE_PERL5=	build
 USE_XORG=	ice sm x11 xaw xext xinerama xrandr xrender
-USES=		autoreconf:build bison compiler:c++14-lang cpe gl gmake gnome \
-		jpeg mysql:client \
-		perl5 pkgconfig python shebangfix shared-mime-info ssl tar:xz \
-		xorg
+USES=		autoreconf:build bison compiler:c++14-lang cpe desktop-file-utils \
+		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
+		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
 
 OPTIONS_DEFINE=	CUPS DOCS GNOME GTK3 I18N JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
 OPTIONS_DEFAULT=	CUPS I18N MMEDIA
@@ -147,7 +146,6 @@ GNOME_USE=	GNOME=dconf
 
 GTK3_CONFIGURE_ENABLE=	gtk3
 GTK3_USE=	GNOME=gtk30,gtk-update-icon-cache
-GTK3_USES=	desktop-file-utils
 GTK3_VARS=	POST_PLIST=add-plist-gnome
 
 I18N_CONFIGURE_WITH=	lang=ALL

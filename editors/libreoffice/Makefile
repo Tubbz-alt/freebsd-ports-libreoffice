@@ -115,7 +115,7 @@ USE_GNOME=	glib20
 USE_OPENLDAP=	yes
 USE_PERL5=	build
 USE_XORG=	ice sm x11 xaw xcb xext xinerama xrandr xrender
-USES=		autoreconf:build bison compiler:c++14-lang cpe \
+USES=		autoreconf:build bison compiler:c++17-lang cpe desktop-file-utils \
 		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
 		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
 
@@ -153,7 +153,6 @@ GNOME_USE=	GNOME=dconf
 
 GTK3_CONFIGURE_ENABLE=	gtk3
 GTK3_USE=	GNOME=gtk30,gtk-update-icon-cache
-GTK3_USES=	desktop-file-utils
 GTK3_VARS=	POST_PLIST=add-plist-gnome
 
 JAVA_BUILD_DEPENDS=	ant:devel/apache-ant \
@@ -210,7 +209,7 @@ PGSQL_USES=	pgsql
 
 QT5_CONFIGURE_ENABLE=	qt5
 QT5_USE=	qt=buildtools_build,core,gui,network,qmake_build,widgets,x11extras
-QT5_USES=	desktop-file-utils qt:5
+QT5_USES=	qt:5
 
 SDK_BUILD_DEPENDS=	doxygen:devel/doxygen
 SDK_CONFIGURE_ENABLE=	odk
