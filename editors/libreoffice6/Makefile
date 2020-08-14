@@ -8,7 +8,7 @@ MASTER_SITES=	https://download.documentfoundation.org/libreoffice/src/${PORTVERS
 DISTFILES=	${PORTNAME}-${LOVERSION}${EXTRACT_SUFX} \
 		${PORTNAME}-help-${LOVERSION}${EXTRACT_SUFX}
 DIST_SUBDIR=	libreoffice
-EXTRACT_ONLY:=	${DISTFILES} ${I18N_DISTFILES}
+EXTRACT_ONLY:=	${DISTFILES}
 PKGNAMESUFFIX=	6
 
 COMMENT=	Full integrated office productivity suite
@@ -82,6 +82,7 @@ LIB_DEPENDS=	libapr-1.so:devel/apr1 \
 		libraptor2.so:textproc/raptor2 \
 		librdf.so:textproc/redland \
 		libfontconfig.so:x11-fonts/fontconfig \
+		libxcb-icccm.so:x11/xcb-util-wm \
 		libserf-1.so:www/serf
 RUN_DEPENDS=	xdg-open:devel/xdg-utils \
 		${LOCALBASE}/share/fonts/Caladea/Caladea-Bold.ttf:x11-fonts/crosextrafonts-caladea-ttf \
@@ -112,18 +113,18 @@ GNU_CONFIGURE=	yes
 USE_GL=		gl glew glu
 USE_OPENLDAP=	yes
 USE_PERL5=	build
-USE_XORG=	ice sm x11 xaw xext xinerama xrandr xrender
+USE_XORG=	ice sm x11 xaw xcb xext xinerama xrandr xrender
 USES=		autoreconf:build bison compiler:c++14-lang cpe desktop-file-utils \
 		gettext-runtime gl gmake gnome jpeg mysql:client perl5 pkgconfig \
 		pkgconfig python shebangfix shared-mime-info ssl tar:xz xorg
 
 OPTIONS_DEFINE=	CUPS DOCS GNOME GTK3 I18N JAVA KF5 MMEDIA PGSQL QT5 SDK TEST WEBDAV
-OPTIONS_DEFAULT=	CUPS I18N MMEDIA
+OPTIONS_DEFAULT=	CUPS MMEDIA
 OPTIONS_DEFAULT_FreeBSD_12=	QT5
 OPTIONS_DEFAULT_FreeBSD_13=	QT5
 OPTIONS_DEFAULT+=	${OPTIONS_DEFAULT_${OPSYS}_${OSREL:R}}
 
-GTK3_DESC=	GTK+ 3 GUI toolkit support (broken visual style)
+GTK3_DESC=	GTK+ 3 GUI toolkit support (incomplete visual style)
 I18N_DESC=	Build i18n resources
 JAVA_DESC=	Add Java support (XML filters, macros, DB connections)
 KF5_DESC=	KF5/Qt5 GUI toolkit support (implies QT5)
@@ -141,7 +142,8 @@ DOCS_CONFIGURE_WITH=	help
 
 GNOME_CONFIGURE_ENABLE=	dbus dconf
 GNOME_IMPLIES=	GTK3
-GNOME_LIB_DEPENDS=	libdbus-glib-1.so:devel/dbus-glib
+GNOME_LIB_DEPENDS=	libdbus-1.so:devel/dbus \
+			libdbus-glib-1.so:devel/dbus-glib
 GNOME_USE=	GNOME=dconf
 
 GTK3_CONFIGURE_ENABLE=	gtk3
@@ -151,6 +153,7 @@ GTK3_VARS=	POST_PLIST=add-plist-gnome
 I18N_CONFIGURE_WITH=	lang=ALL
 I18N_DISTFILES=		${PORTNAME}-dictionaries-${LOVERSION}${EXTRACT_SUFX} \
 			${PORTNAME}-translations-${LOVERSION}${EXTRACT_SUFX}
+I18N_EXTRACT_ONLY=	${I18N_DISTFILES}
 
 JAVA_BUILD_DEPENDS=	ant:devel/apache-ant \
 			${JAVAJARDIR}/commons-codec.jar:java/apache-commons-codec \
@@ -274,7 +277,7 @@ MAKE_ENV+=	verbose=1
 .include <bsd.port.pre.mk>
 
 .if ${PORT_OPTIONS:MGTK3}
-WARNING=	"GTK3 visual style is broken yet, build at your own risk"
+WARNING=	"GTK3 visual style is incomplete yet, build at your own risk"
 .endif
 
 .if ${CHOSEN_COMPILER_TYPE} == clang

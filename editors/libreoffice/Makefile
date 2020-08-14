@@ -126,7 +126,7 @@ OPTIONS_DEFAULT_FreeBSD_13=	QT5
 OPTIONS_DEFAULT+=	${OPTIONS_DEFAULT_${OPSYS}_${OSREL:R}}
 
 COINMP_DESC=	Enable CoinMP (deprecated) math solver
-GTK3_DESC=	GTK+ 3 GUI toolkit support (broken visual style)
+GTK3_DESC=	GTK+ 3 GUI toolkit support (incomplete visual style)
 JAVA_DESC=	Add Java support (XML filters, macros, DB connections)
 KF5_DESC=	KF5/Qt5 GUI toolkit support (implies QT5)
 MMEDIA_DESC=	Enable multimedia backend for Impress
@@ -277,7 +277,7 @@ MAKE_ENV+=	verbose=1
 .include <bsd.port.pre.mk>
 
 .if ${PORT_OPTIONS:MGTK3}
-WARNING=	"GTK3 visual style is broken yet, build at your own risk"
+WARNING=	"GTK3 visual style is incomplete yet, build at your own risk"
 .endif
 
 .if ${CHOSEN_COMPILER_TYPE} == clang
