@@ -1,4 +1,4 @@
-# $FreeBSD: head/editors/libreoffice/Makefile 535467 2020-05-16 15:34:26Z fluffy $
+# $FreeBSD: head/editors/libreoffice/Makefile 545268 2020-08-19 00:44:38Z pkubaj $
 
 .include "${.CURDIR}/Makefile.common"
 
@@ -275,6 +275,10 @@ MAKE_ENV+=	verbose=1
 .include <bsd.port.options.mk>
 
 .include <bsd.port.pre.mk>
+
+.if ${ARCH:Mpowerpc*}
+CONFIGURE_ARGS+=	--disable-skia
+.endif
 
 .if ${PORT_OPTIONS:MGTK3}
 WARNING=	"GTK3 visual style is incomplete yet, build at your own risk"
